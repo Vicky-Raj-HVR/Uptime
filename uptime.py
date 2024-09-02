@@ -1,7 +1,7 @@
 import os
 import requests
 
-API_KEY = 'd05817675ee4'
+API_KEY = 'u2666504-ce8646b9eaabd05817675ee4'
 
 # Retrieve monitor by friendly name
 def get_monitor_by_friendly_name(friendly_name):
