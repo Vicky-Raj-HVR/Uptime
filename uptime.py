@@ -1,7 +1,7 @@
 import argparse
 import requests
 
-API_KEY = 'b9eaabd05817675ee4'
+API_KEY = 'u2666504-ce8646b9eaabd05817675ee4'
 
 # Helper function to get monitor ID by URL or friendly name
 def get_monitor_id_by_url_or_name(url=None, friendly_name=None):
