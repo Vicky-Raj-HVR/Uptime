@@ -20,7 +20,7 @@ def get_monitor_id_by_url_or_name(url=None, friendly_name=None):
     return None
 
 # Add a new monitor
-def add_monitor(friendly_name, url, monitor_type, alert_contacts='', keyword='', keyword_type=None):
+def add_monitor(friendly_name, url, monitor_type, alert_contacts='', keyword_value='', keyword_type=None):
     data = {
         'api_key': API_KEY,
         'friendly_name': friendly_name,
@@ -30,12 +30,13 @@ def add_monitor(friendly_name, url, monitor_type, alert_contacts='', keyword='',
         'format': 'json'
     }
 
+    # If it's a keyword-based monitor, add keyword_value and keyword_type parameters
     if monitor_type == 2:
-        if keyword and keyword_type:
-            data['keyword'] = keyword
+        if keyword_value and keyword_type:
+            data['keyword_value'] = keyword_value
             data['keyword_type'] = keyword_type
         else:
-            print("Keyword monitoring requires both 'keyword' and 'keyword_type'. Aborting.")
+            print("Keyword monitoring requires both 'keyword_value' and 'keyword_type'. Aborting.")
             return
 
     response = requests.post(
@@ -50,7 +51,7 @@ def add_monitor(friendly_name, url, monitor_type, alert_contacts='', keyword='',
         print(f"Failed to add monitor: {result.get('error', 'Unknown error')}")
 
 # Update existing monitor using URL or friendly name
-def update_monitor(friendly_name=None, url=None, new_friendly_name=None, new_url=None, monitor_type=None, alert_contacts=None, keyword=None, keyword_type=None):
+def update_monitor(friendly_name=None, url=None, new_friendly_name=None, new_url=None, monitor_type=None, alert_contacts=None, keyword_value=None, keyword_type=None):
     monitor_id = get_monitor_id_by_url_or_name(url=url, friendly_name=friendly_name)
 
     if not monitor_id:
@@ -72,12 +73,13 @@ def update_monitor(friendly_name=None, url=None, new_friendly_name=None, new_url
     if alert_contacts:
         data['alert_contacts'] = alert_contacts
 
+    # If it's a keyword-based monitor, update keyword_value and keyword_type
     if monitor_type == 2:
-        if keyword and keyword_type:
-            data['keyword'] = keyword
+        if keyword_value and keyword_type:
+            data['keyword_value'] = keyword_value
             data['keyword_type'] = keyword_type
         else:
-            print("Keyword monitoring update requires both 'keyword' and 'keyword_type'.")
+            print("Keyword monitoring update requires both 'keyword_value' and 'keyword_type'.")
             return
 
     response = requests.post(
@@ -124,7 +126,7 @@ def main():
     parser.add_argument('--url', help="URL to monitor")
     parser.add_argument('--monitor_type', type=int, choices=[1, 2, 3], help="Type of monitor (1: HTTP(s), 2: Keyword, 3: Ping)")
     parser.add_argument('--alert_contacts', default='', help="Space-separated list of alert contact IDs")
-    parser.add_argument('--keyword', default='', help="Keyword for Keyword Monitor (only if MONITOR_TYPE is 2)")
+    parser.add_argument('--keyword_value', default='', help="Keyword value for Keyword Monitor (only if MONITOR_TYPE is 2)")
     parser.add_argument('--keyword_type', type=int, choices=[1, 2], help="Keyword type (1: Exists, 2: Not Exists)")
     parser.add_argument('--new_friendly_name', help="New friendly name for update")
     parser.add_argument('--new_url', help="New URL for update")
@@ -138,7 +140,7 @@ def main():
                 url=args.url,
                 monitor_type=args.monitor_type,
                 alert_contacts=args.alert_contacts,
-                keyword=args.keyword,
+                keyword_value=args.keyword_value,
                 keyword_type=args.keyword_type
             )
         else:
@@ -153,7 +155,7 @@ def main():
                 new_url=args.new_url,
                 monitor_type=args.monitor_type,
                 alert_contacts=args.alert_contacts,
-                keyword=args.keyword,
+                keyword_value=args.keyword_value,
                 keyword_type=args.keyword_type
             )
         else:
